@@ -27,6 +27,7 @@ service.interceptors.response.use(
         const res = response.data
         // 如果状态码不等于1，请求错误
         if (res.code !== 1) {
+            this.$toast(res.message)
             return Promise.reject(new Error(res.message || '请求出错，请稍后重试'))
         } else {
             return res

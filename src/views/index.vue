@@ -290,15 +290,6 @@ export default {
 		await this.getWxConfig()
     },
     methods: {
-        /* 接收小程序传参的方法 */
-        getQueryString(name) {
-            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
-            var r = window.location.search.substr(1).match(reg)
-            if (r != null) {
-                return decodeURIComponent(r[2])
-            }
-            return null
-        },
 		async getWxConfig() {
 			let res = await Api.wxConfig()
 			this.configData = res.data
@@ -345,7 +336,7 @@ export default {
                             if(data.code == 1){
                                 that.info.company_logo = data.data
                             }else{
-                                Toast({
+                                this.$toast({
                                     title: data.message || '上传失败，请重新上传',
                                     icon: 'none'
                                 })
@@ -496,7 +487,7 @@ export default {
 		},
 		async handleCapture() {
 			if(!this.info.id){
-				Toast('请先更新报价单')
+				this.$toast('请先更新报价单')
 				return
 			}
 			await Api.updateQuote({

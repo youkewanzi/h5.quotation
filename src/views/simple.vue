@@ -135,7 +135,6 @@ export default {
 		this.$store.commit('user/SET_TOKEN', this.token)
     },
     async mounted() {
-		// console.log(wx)
 		document.addEventListener('WeixinJSBridgeReady', function() {
 			wx.miniProgram.getEnv(function(res) {  
 				console.log('当前环境：' + JSON.stringify(res))
@@ -191,7 +190,7 @@ export default {
                             if(data.code == 1){
                                 that.info.company_logo = data.data
                             }else{
-                                Toast({
+                                this.$toast({
                                     title: data.message || '上传失败，请重新上传',
                                     icon: 'none'
                                 })
