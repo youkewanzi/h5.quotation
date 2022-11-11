@@ -108,7 +108,7 @@ import wx from 'weixin-js-sdk'
 import html2canvas from 'html2canvas'
 import config from '../../build'
 import Api from '../utils/request'
-import { parseTime, toPromise, imageUrlToBase64 } from '@/utils/index'
+import { parseTime, toPromise, imageUrlToBase64, base64toFile } from '@/utils/index'
 
 export default {
 	name: 'Quotation',

@@ -196,7 +196,7 @@ import wx from 'weixin-js-sdk'
 import html2canvas from 'html2canvas'
 import config from '../../build'
 import Api from '../utils/request'
-import { parseTime, toPromise, imageUrlToBase64 } from '@/utils/index'
+import { parseTime, base64toFile, imageUrlToBase64 } from '@/utils/index'
 
 export default {
 	name: 'Quotation',
@@ -307,7 +307,8 @@ export default {
 					signature: data.signature, // 必填，签名
 					jsApiList: [
 						'chooseImage',
-						'uploadImage'
+						'uploadImage',
+						'getLocalImgData'
 					]
 				})
 				wx.ready(res => {
@@ -338,16 +339,25 @@ export default {
 				wx.chooseImage({
 					count: 1,
 					success: res => {
-						that.$toast({ message: JSON.stringify(res), duration: 10000 })
-						console.log(res)
-						const formData = new FormData()
-						formData.append( 'image', res.tempFilePaths[0])
-						Api.uploadFile(formData).then(response => {
-							let imageData = response.data
-							if(imageData){
-								imageUrlToBase64(config.staticUrl + imageData).then(data => {
-									that.info.company_logo = data
-									that.$toast('wx上传成功')
+						that.$toast({ message: JSON.stringify(res), duration: 2000 })
+						let localIds = res.localIds.toString() // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+						wx.getLocalImgData({
+							localId: localIds, // 图片的localID
+							success: (res) => {
+								// localData是图片的base64数据
+								let fileName = new Date().getTime()
+								let file = base64toFile(res.localData, fileName)
+								that.$toast({ message: JSON.stringify(file), duration: 6000 })
+								const formData = new FormData()
+								formData.append('image', file)
+								Api.uploadFile(formData).then(res => {
+									let imageData = res.data
+									if(imageData){
+										imageUrlToBase64(config.staticUrl + imageData).then(data => {
+											that.info.company_logo = data
+											that.$toast('wx上传成功')
+										})
+									}
 								})
 							}
 						})
