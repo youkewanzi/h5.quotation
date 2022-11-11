@@ -9,6 +9,7 @@
 			<div class="content-wrap">
 				<div class="company common-wrap">
 					<div class="item">
+						<van-uploader :after-read="afterRead" />
 						<div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div>
 						<div class="value">
 							<div class="name zh"><van-field type="text" v-model="info.company_name_zh" placeholder="请输入公司名称" /></div>
@@ -318,23 +319,39 @@ export default {
 				})
 			})
 		},
+		afterRead(file) {
+			console.log(file.file)
+			const formData = new FormData()
+			formData.append( 'image', file.file)
+			Api.uploadFile(formData).then(response => {
+				let imageData = response.data
+				if(imageData){
+					imageUrlToBase64(config.staticUrl + imageData).then(data => {
+						this.info.company_logo = data
+						this.$toast('h5上传成功')
+					})
+				}
+			})
+		},
 		handleLogo() {
 			const that = this
-			that.initWxConfig().then((wx, res) => {
-				toPromise(wx.chooseImage, {
-					count: 1
-				}).then(res => {
-					const formData = new FormData()
-					formData.append( 'file', res.tempFilePaths[0])
-                    Api.uploadFile(formData).then(response => {
-						that.info.company_logo = response.data
-                        that.$toast('上传成功')
-                    }).catch(err => {
-						reject(err)
-					})
-					resolve(res)
-				}).catch(err => {
-					reject(err)
+			that.initWxConfig().then(() => {
+				wx.chooseImage({
+					count: 1,
+					success: res => {
+						that.$toast(res)
+						const formData = new FormData()
+						formData.append( 'image', res.tempFilePaths[0])
+						Api.uploadFile(formData).then(response => {
+							let imageData = response.data
+							if(imageData){
+								imageUrlToBase64(config.staticUrl + imageData).then(data => {
+									that.info.company_logo = data
+									that.$toast('wx上传成功')
+								})
+							}
+						})
+					}
 				})
 			})
 		},
