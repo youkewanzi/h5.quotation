@@ -9,8 +9,12 @@
 			<div class="content-wrap">
 				<div class="company common-wrap">
 					<div class="item">
-						<van-uploader :after-read="afterRead" />
-						<div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div>
+						<van-uploader class="logo" :after-read="handleLogo">
+							<template>
+								<img :src="info.company_logo" alt="logo" />
+							</template>
+						</van-uploader>
+						<!-- <div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div> -->
 						<div class="value">
 							<div class="name zh"><van-field type="text" v-model="info.company_name_zh" placeholder="请输入公司名称" /></div>
 							<div class="name cn"><van-field type="text" v-model="info.company_name_cn" placeholder="请输入公司英文名称" /></div>
@@ -289,7 +293,7 @@ export default {
 			})
 		})
 		this.initData()
-		await this.getWxConfig()
+		// await this.getWxConfig()
     },
     methods: {
 		async getWxConfig() {
@@ -320,7 +324,7 @@ export default {
 				})
 			})
 		},
-		afterRead(file) {
+		handleLogo(file) {
 			const formData = new FormData()
 			formData.append( 'image', file.file)
 			Api.uploadFile(formData).then(response => {
@@ -328,44 +332,43 @@ export default {
 				if(imageData){
 					imageUrlToBase64(config.staticUrl + imageData).then(data => {
 						this.info.company_logo = data
-						this.$toast('h5上传成功')
+						this.$toast('上传成功')
 					})
 				}
 			})
 		},
-		handleLogo() {
-			const that = this
-			that.initWxConfig().then((wx) => {
-				wx.chooseImage({
-					count: 1,
-					success: res => {
-						let localIds = res.localIds[0] // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-						that.$toast({ message: localIds, duration: 6000 })
-						wx.getLocalImgData({
-							localId: localIds, // 图片的localID
-							success: (res) => {
-								// localData是图片的base64数据
-								that.$toast({ message: JSON.stringify(res.localData), duration: 6000 })
-								let fileName = new Date().getTime()
-								let file = base64toFile(res.localData, fileName)
-								console.log(file)
-								const formData = new FormData()
-								formData.append('image', file)
-								Api.uploadFile(formData).then(res => {
-									let imageData = res.data
-									if(imageData){
-										imageUrlToBase64(config.staticUrl + imageData).then(data => {
-											that.info.company_logo = data
-											that.$toast('wx上传成功')
-										})
-									}
-								})
-							}
-						})
-					}
-				})
-			})
-		},
+		// handleLogo() {
+		// 	const that = this
+		// 	that.initWxConfig().then((wx) => {
+		// 		wx.chooseImage({
+		// 			count: 1,
+		// 			success: res => {
+		// 				let localIds = res.localIds[0] // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		// 				wx.getLocalImgData({
+		// 					localId: localIds, // 图片的localID
+		// 					success: (res) => {
+		// 						// localData是图片的base64数据
+		// 						that.$toast({ message: JSON.stringify(res.localData), duration: 6000 })
+		// 						let fileName = new Date().getTime()
+		// 						let file = base64toFile(res.localData, fileName)
+		// 						console.log(file)
+		// 						const formData = new FormData()
+		// 						formData.append('image', file)
+		// 						Api.uploadFile(formData).then(res => {
+		// 							let imageData = res.data
+		// 							if(imageData){
+		// 								imageUrlToBase64(config.staticUrl + imageData).then(data => {
+		// 									that.info.company_logo = data
+		// 									that.$toast('wx上传成功')
+		// 								})
+		// 							}
+		// 						})
+		// 					}
+		// 				})
+		// 			}
+		// 		})
+		// 	})
+		// },
 		formatDate(date) {
 			if(date){
 				return parseTime(date)

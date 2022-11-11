@@ -81,23 +81,3 @@ export function base64toFile(base, filename) {
 	//转换成file对象
 	return new File([u8arr], filename, { type: mime })
 }
-
-export function toPromise(fn, config = {}) {
-	return new Promise((resolve, reject) => {
-		fn({
-			...config,
-			success(res) {
-				resolve(res)
-			},
-			fail(err) {
-				reject(err)
-			},
-			complete(err) {
-				reject(err)
-			},
-			cancel(err) {
-				reject(err)
-			}
-		})
-	})
-}

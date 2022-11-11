@@ -4,7 +4,12 @@
 			<div class="content-wrap">
 				<div class="company common-wrap">
 					<div class="item">
-						<div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div>
+						<van-uploader class="logo" :after-read="handleLogo">
+							<template>
+								<img :src="info.company_logo" alt="logo" />
+							</template>
+						</van-uploader>
+						<!-- <div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div> -->
 						<div class="value">
 							<div class="name zh"><van-field type="text" v-model="info.company_name_zh" placeholder="请输入公司名称" /></div>
 							<div class="name cn"><van-field type="text" v-model="info.company_name_cn" placeholder="请输入公司英文名称" /></div>
@@ -108,7 +113,7 @@ import wx from 'weixin-js-sdk'
 import html2canvas from 'html2canvas'
 import config from '../../build'
 import Api from '../utils/request'
-import { parseTime, toPromise, imageUrlToBase64, base64toFile } from '@/utils/index'
+import { parseTime, imageUrlToBase64 } from '@/utils/index'
 
 export default {
 	name: 'Quotation',
@@ -142,7 +147,7 @@ export default {
 			})
 		})
 		this.initData()
-		await this.getWxConfig()
+		// await this.getWxConfig()
     },
     methods: {
 		async getWxConfig() {
@@ -171,40 +176,17 @@ export default {
 				})
 			})
 		},
-		async handleLogo() {
-			const that = this
-			that.initWxConfig().then((wx, res) => {
-				toPromise(wx.chooseImage, {
-					count: 1
-				}).then(res => {
-					wx.uploadFile({
-                        url: config.baseURL + '/upload',
-                        header: {
-                            'Token': that.token,
-                            'content-type': 'multipart/form-data'
-                        },
-                        filePath: res.tempFilePaths[0],
-                        name: 'company_logo',
-                        success: (response) => {
-                            let data = JSON.parse(response.data)
-                            if(data.code == 1){
-                                that.info.company_logo = data.data
-                            }else{
-                                that.$toast({
-                                    title: data.message || '上传失败，请重新上传',
-                                    icon: 'none'
-                                })
-                            }
-                        },
-                        fail: error => {
-							that.$toast(error)
-                            reject(error)
-                        }
-                    })
-					resolve(res)
-				}).catch(err => {
-					reject(err)
-				})
+		handleLogo(file) {
+			const formData = new FormData()
+			formData.append( 'image', file.file)
+			Api.uploadFile(formData).then(response => {
+				let imageData = response.data
+				if(imageData){
+					imageUrlToBase64(config.staticUrl + imageData).then(data => {
+						this.info.company_logo = data
+						this.$toast('上传成功')
+					})
+				}
 			})
 		},
 		formatDate(date) {
