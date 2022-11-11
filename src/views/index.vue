@@ -339,15 +339,16 @@ export default {
 				wx.chooseImage({
 					count: 1,
 					success: res => {
-						that.$toast({ message: JSON.stringify(res), duration: 2000 })
-						let localIds = res.localIds.toString() // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+						let localIds = res.localIds[0] // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+						that.$toast({ message: localIds, duration: 6000 })
 						wx.getLocalImgData({
 							localId: localIds, // 图片的localID
 							success: (res) => {
 								// localData是图片的base64数据
+								that.$toast({ message: JSON.stringify(res.localData), duration: 6000 })
 								let fileName = new Date().getTime()
 								let file = base64toFile(res.localData, fileName)
-								that.$toast({ message: JSON.stringify(file), duration: 6000 })
+								console.log(file)
 								const formData = new FormData()
 								formData.append('image', file)
 								Api.uploadFile(formData).then(res => {
