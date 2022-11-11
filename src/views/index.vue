@@ -299,13 +299,14 @@ export default {
 			const data = this.configData
 			return new Promise((resolve, reject) => {
 				wx.config({
-					debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 					appId: data.appId, // 必填，唯一标识
 					timestamp: data.timestamp, // 必填，生成签名的时间戳
 					nonceStr: data.nonceStr, // 必填，生成签名的随机串
 					signature: data.signature, // 必填，签名
 					jsApiList: [
-						'chooseImage'
+						'chooseImage',
+						'uploadImage'
 					]
 				})
 				wx.ready(res => {
@@ -323,30 +324,14 @@ export default {
 				toPromise(wx.chooseImage, {
 					count: 1
 				}).then(res => {
-					wx.uploadFile({
-                        url: config.baseURL + '/upload',
-                        header: {
-                            'Token': that.token,
-                            'content-type': 'multipart/form-data'
-                        },
-                        filePath: res.tempFilePaths[0],
-                        name: 'company_logo',
-                        success: (response) => {
-                            let data = JSON.parse(response.data)
-                            if(data.code == 1){
-                                that.info.company_logo = data.data
-                            }else{
-                                that.$toast({
-                                    title: data.message || '上传失败，请重新上传',
-                                    icon: 'none'
-                                })
-                            }
-                        },
-                        fail: error => {
-							that.$toast(error)
-                            reject(error)
-                        }
-                    })
+					const formData = new FormData()
+					formData.append( 'file', res.tempFilePaths[0])
+                    Api.uploadFile(formData).then(response => {
+						that.info.company_logo = response.data
+                        that.$toast('上传成功')
+                    }).catch(err => {
+						reject(err)
+					})
 					resolve(res)
 				}).catch(err => {
 					reject(err)

@@ -39,6 +39,12 @@ service.interceptors.response.use(
 )
 
 const Api = {
+    wxConfig() {
+        return service({
+            url: '/jssdk',
+            method: 'get'
+        })
+    },
     getInfo(params) {
         return service({
             url: '/user/priceReport/detail',
@@ -60,10 +66,11 @@ const Api = {
             params
         })
     },
-    wxConfig() {
+    uploadFile(params) {
         return service({
-            url: '/jssdk',
-            method: 'get'
+            url: '/upload',
+            method: 'post',
+            data: params
         })
     }
 }
