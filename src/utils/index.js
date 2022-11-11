@@ -38,6 +38,38 @@ export function parseTime(time, cFormat) {
 	return time_str
 }
 
+export function imageUrlToBase64(imageUrl) {
+	return new Promise((resolve, reject) => {
+		let image = new Image()
+		// 解决跨域问题
+		image.crossOrigin = 'Anonymous'
+		image.src = imageUrl + '?' + Math.random()
+		// image.onload为异步加载
+		image.onload = () => {
+			var canvas = document.createElement('canvas')
+			canvas.width = image.width
+			canvas.height = image.height
+			var context = canvas.getContext('2d')
+			context.drawImage(image, 0, 0, image.width, image.height)
+			var imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+			for(var i = 0; i < imageData.data.length; i += 4) {
+				// 当该像素是透明的，则设置成白色
+				if(imageData.data[i + 3] == 0) {
+					imageData.data[i] = 255
+					imageData.data[i + 1] = 255
+					imageData.data[i + 2] = 255
+					imageData.data[i + 3] = 255
+				}
+			}
+			context.putImageData(imageData, 0, 0)
+			var quality = 0.8
+			// 这里的dataurl就是base64类型
+			var dataURL = canvas.toDataURL('image/jpeg', quality)	// 使用toDataUrl将图片转换成jpeg的格式,不要把图片压缩成png，因为压缩成png后base64的字符串可能比不转换前的长！
+			resolve(dataURL)
+		}
+	})
+}
+
 export function toPromise(fn, config = {}) {
 	return new Promise((resolve, reject) => {
 		fn({

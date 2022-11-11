@@ -4,7 +4,7 @@
 			<div class="content-wrap">
 				<div class="company common-wrap">
 					<div class="item">
-						<div class="logo" @click="handleLogo"><img :src="staticSrc(info.company_logo)" alt="logo" /></div>
+						<div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div>
 						<div class="value">
 							<div class="name zh"><van-field type="text" v-model="info.company_name_zh" placeholder="请输入公司名称" /></div>
 							<div class="name cn"><van-field type="text" v-model="info.company_name_cn" placeholder="请输入公司英文名称" /></div>
@@ -37,7 +37,7 @@
 				<div class="price list-item common-wrap" v-for="(item, index) in list" :key="index">
                     <div class="title">{{item.startPort}}<img src="@/assets/image/arrow.png" mode="widthFix" class="arrow" />{{item.endPort}}</div>
                     <div class="name">
-                        <img :src="staticSrc(item.company.logo)" mode="widthFix" class="logo" />
+                        <img :src="item.company.logo" mode="widthFix" class="logo" />
                         <span>{{item.company.english_name}}</span>
                     </div>
                     <div class="content">
@@ -104,11 +104,11 @@
 
 <script>
 
-import config from '../../build'
-import Api from '../utils/request'
-import { parseTime, toPromise } from '@/utils/index'
 import wx from 'weixin-js-sdk'
 import html2canvas from 'html2canvas'
+import config from '../../build'
+import Api from '../utils/request'
+import { parseTime, toPromise, imageUrlToBase64 } from '@/utils/index'
 
 export default {
 	name: 'Quotation',
@@ -121,12 +121,13 @@ export default {
             info: {
                 company_name_zh: '',
                 company_name_cn: '',
-                company_logo: '',
+                company_logo: require('@/assets/image/logo.png'),
                 company_address: '',
                 to: '',
                 to_date: ''
             },
-            list: []
+            list: [],
+            defaultLogo: require('@/assets/image/logo.png')
 		}
 	},
     created() {
@@ -158,8 +159,7 @@ export default {
 					nonceStr: data.nonceStr, // 必填，生成签名的随机串
 					signature: data.signature, // 必填，签名
 					jsApiList: [
-						'chooseImage',
-						'downloadImage'
+						'chooseImage'
 					]
 				})
 				wx.ready(res => {
@@ -173,7 +173,7 @@ export default {
 		},
 		async handleLogo() {
 			const that = this
-			this.initWxConfig().then((wx, res) => {
+			that.initWxConfig().then((wx, res) => {
 				toPromise(wx.chooseImage, {
 					count: 1
 				}).then(res => {
@@ -190,11 +190,15 @@ export default {
                             if(data.code == 1){
                                 that.info.company_logo = data.data
                             }else{
-                                this.$toast({
+                                that.$toast({
                                     title: data.message || '上传失败，请重新上传',
                                     icon: 'none'
                                 })
                             }
+                        },
+                        fail: error => {
+							that.$toast(error)
+                            reject(error)
                         }
                     })
 					resolve(res)
@@ -209,13 +213,6 @@ export default {
 			}else {
 				return ''
 			}
-		},
-		staticSrc(url){
-			let fileUrl = require('@/assets/image/logo.png')
-			if(url) {
-				fileUrl = config.staticUrl + url
-			}
-			return fileUrl
 		},
         handleToDate(value) {
             this.info.to_date = parseInt((new Date(value)).getTime() / 1000)
@@ -237,6 +234,13 @@ export default {
                     item.hq40_weight = ''
                     item.hq40_is_w = 0
                     item.usd = 0.00
+                    if(item.company.logo){
+                        imageUrlToBase64(config.staticUrl + item.company.logo).then(res => {
+                            item.company.logo = res
+                        })
+                    }else{
+                        item.company.logo = this.defaultLogo
+                    }
                 })
                 this.list = data
                 this.info.to_date = parseInt(new Date().getTime())

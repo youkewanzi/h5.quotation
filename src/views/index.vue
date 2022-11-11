@@ -9,7 +9,7 @@
 			<div class="content-wrap">
 				<div class="company common-wrap">
 					<div class="item">
-						<div class="logo" @click="handleLogo"><img :src="staticSrc(info.company_logo)" alt="logo" /></div>
+						<div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div>
 						<div class="value">
 							<div class="name zh"><van-field type="text" v-model="info.company_name_zh" placeholder="请输入公司名称" /></div>
 							<div class="name cn"><van-field type="text" v-model="info.company_name_cn" placeholder="请输入公司英文名称" /></div>
@@ -191,11 +191,11 @@
 
 <script>
 
-import config from '../../build'
-import Api from '../utils/request'
-import { parseTime, toPromise } from '@/utils/index'
 import wx from 'weixin-js-sdk'
 import html2canvas from 'html2canvas'
+import config from '../../build'
+import Api from '../utils/request'
+import { parseTime, toPromise, imageUrlToBase64 } from '@/utils/index'
 
 export default {
 	name: 'Quotation',
@@ -210,7 +210,7 @@ export default {
 			showRangeTime: false,
 			info: {
 				id: '',
-				company_logo: '',
+				company_logo: require('@/assets/image/logo.png'),
 				company_name_zh: '',
 				company_name_cn: '',
 				company_address: '',
@@ -272,7 +272,8 @@ export default {
 				cny: 0.00
 			},
 			usdSurcharge: 0, // usd附加费
-			cnySurcharge: 0  // cny附加费
+			cnySurcharge: 0, // cny附加费
+            defaultLogo: require('@/assets/image/logo.png')
 		}
 	},
     created() {
@@ -304,8 +305,7 @@ export default {
 					nonceStr: data.nonceStr, // 必填，生成签名的随机串
 					signature: data.signature, // 必填，签名
 					jsApiList: [
-						'chooseImage',
-						'downloadImage'
+						'chooseImage'
 					]
 				})
 				wx.ready(res => {
@@ -319,7 +319,7 @@ export default {
 		},
 		handleLogo() {
 			const that = this
-			this.initWxConfig().then((wx, res) => {
+			that.initWxConfig().then((wx, res) => {
 				toPromise(wx.chooseImage, {
 					count: 1
 				}).then(res => {
@@ -336,11 +336,15 @@ export default {
                             if(data.code == 1){
                                 that.info.company_logo = data.data
                             }else{
-                                this.$toast({
+                                that.$toast({
                                     title: data.message || '上传失败，请重新上传',
                                     icon: 'none'
                                 })
                             }
+                        },
+                        fail: error => {
+							that.$toast(error)
+                            reject(error)
                         }
                     })
 					resolve(res)
@@ -356,18 +360,18 @@ export default {
 				return ''
 			}
 		},
-		staticSrc(url){
-			let fileUrl = require('@/assets/image/logo.png')
-			if(url) {
-				fileUrl = config.staticUrl + url
-			}
-			return fileUrl
-		},
 		initData() {
 			Api.getInfo({
 				id: this.id
 			}).then(res => {
 				let data = res.data
+				if(data.company_logo){
+					imageUrlToBase64(config.staticUrl + data.company_logo).then(res => {
+						data.company_logo = res
+					})
+				}else{
+					data.company_logo = this.defaultLogo
+				}
 				for (const key in data) {
 					if (Object.hasOwnProperty.call(this.info, key)) {
 						const element = data[key]
