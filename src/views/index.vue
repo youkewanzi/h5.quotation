@@ -335,11 +335,12 @@ export default {
 		},
 		handleLogo() {
 			const that = this
-			that.initWxConfig().then(() => {
+			that.initWxConfig().then((wx) => {
 				wx.chooseImage({
 					count: 1,
 					success: res => {
 						that.$toast(res)
+						console.log(res)
 						const formData = new FormData()
 						formData.append( 'image', res.tempFilePaths[0])
 						Api.uploadFile(formData).then(response => {
