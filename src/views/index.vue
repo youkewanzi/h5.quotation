@@ -320,7 +320,6 @@ export default {
 			})
 		},
 		afterRead(file) {
-			console.log(file.file)
 			const formData = new FormData()
 			formData.append( 'image', file.file)
 			Api.uploadFile(formData).then(response => {
@@ -339,7 +338,7 @@ export default {
 				wx.chooseImage({
 					count: 1,
 					success: res => {
-						that.$toast(res)
+						that.$toast({ message: JSON.stringify(res), duration: 10000 })
 						console.log(res)
 						const formData = new FormData()
 						formData.append( 'image', res.tempFilePaths[0])
