@@ -6,7 +6,7 @@
 					<div class="item">
 						<van-uploader class="logo" :after-read="handleLogo">
 							<template>
-								<img :src="info.company_logo" alt="logo" />
+								<img :src="company_logo" alt="logo" />
 							</template>
 						</van-uploader>
 						<!-- <div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div> -->
@@ -123,16 +123,16 @@ export default {
 			token: '',
 			configData: {},
             showToDate: false,
+			company_logo: require('@/assets/image/logo.png'),
             info: {
                 company_name_zh: '',
                 company_name_cn: '',
-                company_logo: require('@/assets/image/logo.png'),
+                company_logo: '',
                 company_address: '',
                 to: '',
                 to_date: ''
             },
-            list: [],
-            defaultLogo: require('@/assets/image/logo.png')
+            list: []
 		}
 	},
     created() {
@@ -182,8 +182,9 @@ export default {
 			Api.uploadFile(formData).then(response => {
 				let imageData = response.data
 				if(imageData){
-					imageUrlToBase64(config.staticUrl + imageData).then(data => {
-						this.info.company_logo = data
+					this.info.company_logo = imageData
+					imageUrlToBase64(config.staticUrl + imageData).then(res => {
+						this.company_logo = res
 						this.$toast('上传成功')
 					})
 				}
@@ -221,7 +222,7 @@ export default {
                             item.company.logo = res
                         })
                     }else{
-                        item.company.logo = this.defaultLogo
+                        item.company.logo = require('@/assets/image/logo.png')
                     }
                 })
                 this.list = data

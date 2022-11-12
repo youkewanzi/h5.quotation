@@ -11,7 +11,7 @@
 					<div class="item">
 						<van-uploader class="logo" :after-read="handleLogo">
 							<template>
-								<img :src="info.company_logo" alt="logo" />
+								<img :src="company_logo" alt="logo" />
 							</template>
 						</van-uploader>
 						<!-- <div class="logo" @click="handleLogo"><img :src="info.company_logo" alt="logo" /></div> -->
@@ -213,9 +213,10 @@ export default {
 			showToDate: false,
 			showCloseTime: false,
 			showRangeTime: false,
+			company_logo: require('@/assets/image/logo.png'),
 			info: {
 				id: '',
-				company_logo: require('@/assets/image/logo.png'),
+				company_logo: '',
 				company_name_zh: '',
 				company_name_cn: '',
 				company_address: '',
@@ -277,8 +278,7 @@ export default {
 				cny: 0.00
 			},
 			usdSurcharge: 0, // usd附加费
-			cnySurcharge: 0, // cny附加费
-            defaultLogo: require('@/assets/image/logo.png')
+			cnySurcharge: 0	// cny附加费
 		}
 	},
     created() {
@@ -330,8 +330,9 @@ export default {
 			Api.uploadFile(formData).then(response => {
 				let imageData = response.data
 				if(imageData){
+					this.info.company_logo = imageData
 					imageUrlToBase64(config.staticUrl + imageData).then(data => {
-						this.info.company_logo = data
+						this.company_logo = data
 						this.$toast('上传成功')
 					})
 				}
@@ -383,10 +384,8 @@ export default {
 				let data = res.data
 				if(data.company_logo){
 					imageUrlToBase64(config.staticUrl + data.company_logo).then(res => {
-						data.company_logo = res
+						this.company_logo = res
 					})
-				}else{
-					data.company_logo = this.defaultLogo
 				}
 				for (const key in data) {
 					if (Object.hasOwnProperty.call(this.info, key)) {
