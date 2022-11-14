@@ -282,6 +282,11 @@ input{
                 height: 100%;
                 line-height: 1rem;
                 text-align: center;
+                border: none;
+                background-color: #fff;
+                &:focus-visible{
+                    outline: none;
+                }
                 &.update{
                     flex: 1;
                 }

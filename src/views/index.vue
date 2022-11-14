@@ -187,8 +187,8 @@
 		</div>
 		<div class="operate-wrap">
 			<div class="operate">
-				<div class="btn update" @click="handleSave">更新</div>
-				<div class="btn capture" @click="handleCapture">生成报价单</div>
+				<button class="btn update" @click="handleSave" v-preventReClick="3000">更新</button>
+				<button class="btn capture" @click="handleCapture" v-preventReClick="3000">生成报价单</button>
 			</div>
 		</div>
 	</div>
@@ -296,48 +296,34 @@ export default {
 		// await this.getWxConfig()
     },
     methods: {
-		async getWxConfig() {
-			let res = await Api.wxConfig()
-			this.configData = res.data
-		},
-		initWxConfig() {
-			const data = this.configData
-			return new Promise((resolve, reject) => {
-				wx.config({
-					debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-					appId: data.appId, // 必填，唯一标识
-					timestamp: data.timestamp, // 必填，生成签名的时间戳
-					nonceStr: data.nonceStr, // 必填，生成签名的随机串
-					signature: data.signature, // 必填，签名
-					jsApiList: [
-						'chooseImage',
-						'uploadImage',
-						'getLocalImgData'
-					]
-				})
-				wx.ready(res => {
-					// 微信SDK准备就绪后执行的回调。
-					resolve(wx, res)
-				})
-				wx.error(err => {
-					reject(wx, err)
-				})
-			})
-		},
-		handleLogo(file) {
-			const formData = new FormData()
-			formData.append( 'image', file.file)
-			Api.uploadFile(formData).then(response => {
-				let imageData = response.data
-				if(imageData){
-					this.info.company_logo = imageData
-					imageUrlToBase64(config.staticUrl + imageData).then(data => {
-						this.company_logo = data
-						this.$toast('上传成功')
-					})
-				}
-			})
-		},
+		// async getWxConfig() {
+		// 	let res = await Api.wxConfig()
+		// 	this.configData = res.data
+		// },
+		// initWxConfig() {
+		// 	const data = this.configData
+		// 	return new Promise((resolve, reject) => {
+		// 		wx.config({
+		// 			debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+		// 			appId: data.appId, // 必填，唯一标识
+		// 			timestamp: data.timestamp, // 必填，生成签名的时间戳
+		// 			nonceStr: data.nonceStr, // 必填，生成签名的随机串
+		// 			signature: data.signature, // 必填，签名
+		// 			jsApiList: [
+		// 				'chooseImage',
+		// 				'uploadImage',
+		// 				'getLocalImgData'
+		// 			]
+		// 		})
+		// 		wx.ready(res => {
+		// 			// 微信SDK准备就绪后执行的回调。
+		// 			resolve(wx, res)
+		// 		})
+		// 		wx.error(err => {
+		// 			reject(wx, err)
+		// 		})
+		// 	})
+		// },
 		// handleLogo() {
 		// 	const that = this
 		// 	that.initWxConfig().then((wx) => {
@@ -370,13 +356,6 @@ export default {
 		// 		})
 		// 	})
 		// },
-		formatDate(date) {
-			if(date){
-				return parseTime(date)
-			}else {
-				return ''
-			}
-		},
 		initData() {
 			Api.getInfo({
 				id: this.id
@@ -417,6 +396,13 @@ export default {
 					this.info.to_date = parseInt(new Date().getTime() / 1000)
 				}
 			})
+		},
+		formatDate(date) {
+			if(date){
+				return parseTime(date)
+			}else {
+				return ''
+			}
 		},
         handleToDate(value) {
             this.info.to_date = parseInt((new Date(value)).getTime() / 1000)
@@ -499,6 +485,20 @@ export default {
 			let transPrice = parseFloat(this.info.price_json.transPrice.sum) || 0
 			this.info.usd = parseFloat(transPrice) + parseFloat(this.usdSurcharge)
 		},
+		handleLogo(file) {
+			const formData = new FormData()
+			formData.append( 'image', file.file)
+			Api.uploadFile(formData).then(response => {
+				let imageData = response.data
+				if(imageData){
+					this.info.company_logo = imageData
+					imageUrlToBase64(config.staticUrl + imageData).then(data => {
+						this.company_logo = data
+						this.$toast('上传成功')
+					})
+				}
+			})
+		},
 		handleSave() {
 			Api.updateQuote(this.info).then(() => {
 				this.handleLog()
@@ -509,10 +509,10 @@ export default {
 				this.$toast('请先更新报价单')
 				return
 			}
-			await Api.updateQuote({
-				id: this.info.id,
-				status: 2
-			})
+			let params = Object.assign({}, this.info)
+			params.status = 2
+			await Api.updateQuote(params)
+
 			const ref = this.$refs.content // 截图区域
 			html2canvas(ref, {
 				backgroundColor: '#f1f1f1',

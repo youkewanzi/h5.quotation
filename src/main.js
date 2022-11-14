@@ -6,6 +6,9 @@ import store from './store'
 import '@/assets/js/rem.js'
 import '@/assets/css/layout.scss'
 
+import preventReClick from './utils/click'
+Vue.use(preventReClick)
+
 import { Toast, Calendar, Switch, Field, Uploader } from 'vant'
 import 'vant/lib/toast/style'
 import 'vant/lib/calendar/style'

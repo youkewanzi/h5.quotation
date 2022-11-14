@@ -69,6 +69,7 @@ export function imageUrlToBase64(imageUrl) {
 		}
 	})
 }
+
 export function base64toFile(base, filename) {
 	let arr = base.split(',')
 	let mime = arr[0].match(/:(.*?);/)[1]

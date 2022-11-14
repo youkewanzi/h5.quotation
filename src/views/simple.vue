@@ -101,7 +101,7 @@
 		<div class="operate-wrap">
 			<div class="operate">
 				<div class="btn update"></div>
-				<div class="btn capture" @click="handleCapture">生成报价单</div>
+				<button class="btn capture" @click="handleCapture" v-preventReClick="3000">生成报价单</button>
 			</div>
 		</div>
 	</div>
@@ -176,31 +176,6 @@ export default {
 				})
 			})
 		},
-		handleLogo(file) {
-			const formData = new FormData()
-			formData.append( 'image', file.file)
-			Api.uploadFile(formData).then(response => {
-				let imageData = response.data
-				if(imageData){
-					this.info.company_logo = imageData
-					imageUrlToBase64(config.staticUrl + imageData).then(res => {
-						this.company_logo = res
-						this.$toast('上传成功')
-					})
-				}
-			})
-		},
-		formatDate(date) {
-			if(date){
-				return parseTime(date)
-			}else {
-				return ''
-			}
-		},
-        handleToDate(value) {
-            this.info.to_date = parseInt((new Date(value)).getTime() / 1000)
-            this.showToDate = false
-        },
 		initData() {
 			Api.getBatchInfo({
 				complete_price_ids: this.ids
@@ -227,6 +202,31 @@ export default {
                 })
                 this.list = data
                 this.info.to_date = parseInt(new Date().getTime())
+			})
+		},
+		formatDate(date) {
+			if(date){
+				return parseTime(date)
+			}else {
+				return ''
+			}
+		},
+        handleToDate(value) {
+            this.info.to_date = parseInt((new Date(value)).getTime() / 1000)
+            this.showToDate = false
+        },
+		handleLogo(file) {
+			const formData = new FormData()
+			formData.append( 'image', file.file)
+			Api.uploadFile(formData).then(response => {
+				let imageData = response.data
+				if(imageData){
+					this.info.company_logo = imageData
+					imageUrlToBase64(config.staticUrl + imageData).then(res => {
+						this.company_logo = res
+						this.$toast('上传成功')
+					})
+				}
 			})
 		},
         handleLog() {
