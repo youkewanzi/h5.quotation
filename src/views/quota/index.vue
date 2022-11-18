@@ -1,5 +1,5 @@
 <template>
-	<div class="page-container">
+	<div class="page-container quota">
 		<div class="tip">
 			<img src="@/assets/image/tipc.png" class="icon" />
 			<span class="text">报价单Logo会优先从历史记录中获取</span>
@@ -198,8 +198,8 @@
 
 import wx from 'weixin-js-sdk'
 import html2canvas from 'html2canvas'
-import config from '../../build'
-import Api from '../utils/request'
+import config from '../../../build'
+import Api from '../../utils/request'
 import { parseTime, base64toFile, imageUrlToBase64 } from '@/utils/index'
 
 export default {

@@ -1,5 +1,5 @@
 <template>
-	<div class="page-container">
+	<div class="page-container quota">
 		<div class="content-container" ref="content">
 			<div class="content-wrap">
 				<div class="company common-wrap">
@@ -111,8 +111,8 @@
 
 import wx from 'weixin-js-sdk'
 import html2canvas from 'html2canvas'
-import config from '../../build'
-import Api from '../utils/request'
+import config from '../../../build'
+import Api from '../../utils/request'
 import { parseTime, imageUrlToBase64 } from '@/utils/index'
 
 export default {

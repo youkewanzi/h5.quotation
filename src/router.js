@@ -9,13 +9,25 @@ export default new Router({
             path: '/',
             name: 'Quotation',
             meta: {title: '报价单'},
-            component: () => import('@/views/index')
+            component: () => import('@/views/quota/index')
         },
         {
             path: '/simple',
             name: 'Simple',
             meta: {title: '报价单'},
-            component: () => import('@/views/simple')
+            component: () => import('@/views/quota/simple')
+        },
+        {
+            path: '/share',
+            name: 'Share',
+            meta: {title: '分享邀请'},
+            component: () => import('@/views/share/index')
+        },
+        {
+            path: '/poster',
+            name: 'Poster',
+            meta: {title: '邀请好友'},
+            component: () => import('@/views/share/poster')
         }
     ]
 })

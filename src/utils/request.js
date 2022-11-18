@@ -44,6 +44,12 @@ const Api = {
             method: 'get'
         })
     },
+    getUserInfo() {
+        return service({
+            url: '/user/info',
+            method: 'get'
+        })
+    },
     getInfo(params) {
         return service({
             url: '/user/priceReport/detail',
@@ -70,6 +76,18 @@ const Api = {
             url: '/upload',
             method: 'post',
             data: params
+        })
+    },
+    inviterRecord() {
+        return service({
+            url: '/user/inviter_record',
+            method: 'get'
+        })
+    },
+    getQrCode() {
+        return service({
+            url: '/user/get_qr_code',
+            method: 'get'
         })
     }
 }
