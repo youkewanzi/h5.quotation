@@ -509,12 +509,14 @@ input{
                     .tips{
                         margin-top: 0.1rem;
                         font-size: 0.28rem;
-                        text{
-                            margin: 0 0.5rem;
-                            font-size: 0.32rem;
+                        span{
+                            font-size: 0.3rem;
+                            font-weight: 600;
                             color: #FAFF01;
                             &.num{
+                                font-size: 0.32rem;
                                 font-style: italic;
+                                margin-right: 0.05rem;
                             }
                         }
                     }

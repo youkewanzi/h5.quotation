@@ -5,7 +5,7 @@
                 <div class="avatar"><img :src="avatar_url" /></div>
                 <div class="value">
                     <div class="name">我是《{{nickname}}》</div>
-                    <div class="tips">邀你免费领取 <span class="num">50</span><span>元</span>整箱航运抵扣券</div>
+                    <div class="tips">邀你免费领取 <span class="num">50</span><span>元</span> 整箱航运抵扣券</div>
                 </div>
             </div>
             <div class="content">
