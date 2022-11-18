@@ -564,8 +564,9 @@ input{
                 }
                 .qrcode{
                     display: flex;
+                    justify-content: center;
                     align-items: center;
-                    margin-top: 2.84rem;
+                    margin-top: 2.7rem;
                     .code{
                         width: 1.48rem;
                         height: 1.48rem;
