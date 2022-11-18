@@ -479,6 +479,39 @@ input{
                 }
             }
         }
+        .share-mark{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba($color: #000000, $alpha: 0.65);
+            z-index: 99;
+            .modal{
+                position: absolute;
+                top: 0.1rem;
+                right: 0.3rem;
+                z-index: 100;
+                .arrow{
+                    position: absolute;
+                    top: 0;
+                    right: 0.4rem;
+                    width: 0.64rem;
+                }
+                .box{
+                    padding: 0.25rem 0.45rem;
+                    margin-top: 0.5rem;
+                    font-size: 0.28rem;
+                    background-color: #fff;
+                    border-radius: 0.12rem;
+                    img{
+                        width: 0.5rem;
+                        display: inline-block;
+                        vertical-align: middle;
+                    }
+                }
+            }
+        }
     }
     &.poster{
         .poster-wrap{
