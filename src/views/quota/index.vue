@@ -452,7 +452,8 @@ export default {
 			this.info.cny = cnyPrice + parseFloat(this.cnySurcharge)
 
 			let transPrice = parseFloat(this.info.price_json.transPrice.sum) || 0
-			this.info.usd = parseFloat(transPrice) + parseFloat(this.usdSurcharge)
+			let storagePrice = parseFloat(this.info.price_json.storagePrice.sum) || 0
+			this.info.usd = parseFloat(transPrice) + parseFloat(storagePrice) + parseFloat(this.usdSurcharge)
 		},
 		handleLogo(file) {
 			const formData = new FormData()
