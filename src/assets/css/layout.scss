@@ -274,29 +274,18 @@ input{
             bottom: 0;
             background-color: #fff;
             z-index: 99;
-            .operate{
-                display: flex;
-                justify-content: space-between;
+            .btn{
+                width: 100%;
                 height: 1rem;
+                line-height: 1rem;
                 font-size: 0.34rem;
                 font-weight: bold;
-                .btn{
-                    height: 100%;
-                    line-height: 1rem;
-                    text-align: center;
-                    border: none;
-                    background-color: #fff;
-                    &:focus-visible{
-                        outline: none;
-                    }
-                    &.update{
-                        flex: 1;
-                    }
-                    &.capture{
-                        width: 2.4rem;
-                        color: #fff;
-                        background-color: #FE6E26;
-                    }
+                text-align: center;
+                color: #fff;
+                background-color: #FE6E26;
+                border: none;
+                &:focus-visible{
+                    outline: none;
                 }
             }
         }

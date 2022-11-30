@@ -95,19 +95,19 @@
 							</tr>
 							<tr>
 								<td>20GP</td>
-								<td><van-field type="number" v-model="info.gp20_count" @input="calcTransPrice" /></td>
+								<td><van-field type="number" v-model="info.gp20_count" @change="calcTransPrice" /></td>
 								<td><van-field type="number" v-model="info.gp20_weight" /></td>
 								<td><van-switch v-model="info.gp20_is_w" active-value="1" inactive-value="0" size="24px" /></td>
 							</tr>
 							<tr>
 								<td>40GP</td>
-								<td><van-field type="number" v-model="info.gp40_count" @input="calcTransPrice" /></td>
+								<td><van-field type="number" v-model="info.gp40_count" @change="calcTransPrice" /></td>
 								<td><van-field type="number" v-model="info.gp40_weight" /></td>
 								<td><van-switch v-model="info.gp40_is_w" active-value="1" inactive-value="0" size="24px" /></td>
 							</tr>
 							<tr>
 								<td>40HQ</td>
-								<td><van-field type="number" v-model="info.hq40_count" @input="calcTransPrice" /></td>
+								<td><van-field type="number" v-model="info.hq40_count" @change="calcTransPrice" /></td>
 								<td><van-field type="number" v-model="info.hq40_weight" /></td>
 								<td><van-switch v-model="info.hq40_is_w" active-value="1" inactive-value="0" size="24px" /></td>
 							</tr>
@@ -120,52 +120,66 @@
 						<table>
 							<tr>
 								<th>收费项</th>
-								<th>预付</th>
-								<th>到付</th>
-								<th>备注</th>
+								<th>20GP</th>
+								<th>40GP</th>
+								<th>40HQ</th>
+								<th>小计</th>
 							</tr>
 							<tr>
 								<td><span class="query" @click="queryPrice('yunjia')">运费(O/F)</span></td>
-								<td><van-field type="number" v-model="info.price_json.transPrice.sum" @input="calcTotal" /></td>
-								<td><van-field type="number" v-model="info.price_json.transPrice.sum2" /></td>
-								<td><van-field type="text" v-model="info.price_json.transPrice.remark" /></td>
+								<td><van-field type="number" v-model="info.price_json.transPrice.gp20" @change="subTotal($event, 'transPrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.transPrice.gp40" @change="subTotal($event, 'transPrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.transPrice.hq40" @change="subTotal($event, 'transPrice')" /></td>
+								<td>{{info.price_json.transPrice.sum}}</td>
 							</tr>
 							<tr v-for="(item, i) in info.price_json.portSurcharge || []" :key="i">
 								<td>{{item.title}}</td>
-								<td><van-field type="number" v-model="item.price" @input="calcSurcharge"/></td>
-								<td><van-field type="number" v-model="item.price2" /></td>
-								<td><van-field type="text" v-model="item.remark" /></td>
+								<td><van-field type="number" v-model="item.list.gp20" @change="subTotal(i, 'portSurcharge')" /></td>
+								<td><van-field type="number" v-model="item.list.gp40" @change="subTotal(i, 'portSurcharge')" /></td>
+								<td><van-field type="number" v-model="item.list.hq40" @change="subTotal(i, 'portSurcharge')" /></td>
+								<td>{{item.list.sum}}</td>
 							</tr>
 							<tr v-for="(item, i) in info.price_json.companySurcharge || []" :key="i+100">
 								<td>{{item.title}}</td>
-								<td><van-field type="number" v-model="item.price" @input="calcSurcharge"/></td>
-								<td><van-field type="number" v-model="item.price2" /></td>
-								<td><van-field type="text" v-model="item.remark" /></td>
+								<td><van-field type="number" v-model="item.list.gp20" @change="subTotal(i, 'companySurcharge')" /></td>
+								<td><van-field type="number" v-model="item.list.gp40" @change="subTotal(i, 'companySurcharge')" /></td>
+								<td><van-field type="number" v-model="item.list.hq40" @change="subTotal(i, 'companySurcharge')" /></td>
+								<td>{{item.list.sum}}</td>
 							</tr>
 							<tr>
 								<td><span class="query" @click="queryPrice('tuoche')">拖车费</span></td>
-								<td><van-field type="number" v-model="info.price_json.carPrice.sum" @input="calcTotal"/></td>
-								<td><van-field type="number" v-model="info.price_json.carPrice.sum2" /></td>
-								<td><van-field type="text" v-model="info.price_json.carPrice.remark" /></td>
+								<td><van-field type="number" v-model="info.price_json.carPrice.gp20" @change="subTotal($event, 'carPrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.carPrice.gp40" @change="subTotal($event, 'carPrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.carPrice.hq40" @change="subTotal($event, 'carPrice')" /></td>
+								<td>{{info.price_json.carPrice.sum}}</td>
 							</tr>
 							<tr>
 								<td><span class="query" @click="queryPrice('baoguan')">报关费</span></td>
-								<td><van-field type="number" v-model="info.price_json.customer_price.money" @input="calcTotal"/></td>
-								<td><van-field type="number" v-model="info.price_json.customer_price.money2" /></td>
-								<td><van-field type="text" v-model="info.price_json.customer_price.reamrk" /></td>
+								<td><van-field type="number" v-model="info.price_json.customerPrice.gp20" @change="subTotal($event, 'customerPrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.customerPrice.gp40" @change="subTotal($event, 'customerPrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.customerPrice.hq40" @change="subTotal($event, 'customerPrice')" /></td>
+								<td>{{info.price_json.customerPrice.sum}}</td>
+							</tr>
+							<tr>
+								<td><span>仓储费</span></td>
+								<td><van-field type="number" v-model="info.price_json.storagePrice.gp20" @change="subTotal($event, 'storagePrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.storagePrice.gp40" @change="subTotal($event, 'storagePrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.storagePrice.hq40" @change="subTotal($event, 'storagePrice')" /></td>
+								<td>{{info.price_json.storagePrice.sum}}</td>
 							</tr>
 							<tr>
 								<td><span>其它费</span></td>
-								<td><van-field type="number" v-model="info.price_json.otherPrice.sum" @input="calcTotal"/></td>
-								<td><van-field type="number" v-model="info.price_json.otherPrice.sum2" /></td>
-								<td><van-field type="text" v-model="info.price_json.otherPrice.reamrk" /></td>
+								<td><van-field type="number" v-model="info.price_json.otherPrice.gp20" @change="subTotal($event, 'otherPrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.otherPrice.gp40" @change="subTotal($event, 'otherPrice')" /></td>
+								<td><van-field type="number" v-model="info.price_json.otherPrice.hq40" @change="subTotal($event, 'otherPrice')" /></td>
+								<td>{{info.price_json.otherPrice.sum}}</td>
 							</tr>
 							<tr>
 								<td rowspan="2" class="tit">合计</td>
-								<td colspan="3" class="total">USD：{{info.usd || ''}}</td>
+								<td colspan="4" class="total">USD：{{info.usd || 0.00}}</td>
 							</tr>
 							<tr>
-								<td colspan="3" class="total">CNY：{{info.cny || ''}}</td>
+								<td colspan="4" class="total">CNY：{{info.cny || 0.00}}</td>
 							</tr>
 						</table>
 					</div>
@@ -186,10 +200,7 @@
 			</div>
 		</div>
 		<div class="operate-wrap">
-			<div class="operate">
-				<button class="btn update" @click="handleSave" v-preventReClick="3000">更新</button>
-				<button class="btn capture" @click="handleCapture" v-preventReClick="3000">生成报价单</button>
-			</div>
+			<button class="btn capture" @click="handleCapture" v-preventReClick="3000">保存并生成报价单</button>
 		</div>
 	</div>
 </template>
@@ -200,7 +211,7 @@ import wx from 'weixin-js-sdk'
 import html2canvas from 'html2canvas'
 import config from '../../../build'
 import Api from '../../utils/request'
-import { parseTime, base64toFile, imageUrlToBase64 } from '@/utils/index'
+import { parseTime, imageUrlToBase64 } from '@/utils/index'
 
 export default {
 	name: 'Quotation',
@@ -246,33 +257,19 @@ export default {
 				hq40_is_w: 0,
 				price_json: {
 					// 运费
-					transPrice: {
-						sum: '',
-						sum2: '',
-						remark: ''
-					},
+					transPrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 },
 					// 港口附加费
 					portSurcharge: [],
 					// 公司附加费
 					companySurcharge: [],
 					// 拖车费
-					carPrice: {
-						sum: '',
-						sum2: '',
-						remark: ''
-					},
+					carPrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 },
 					// 报关费
-					customer_price: {
-						money: '',
-						money2: '',
-						remark: ''
-					},
+					customerPrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 },
+					// 仓储费
+					storagePrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 },
 					// 其它费
-					otherPrice: {
-						sum: '',
-						sum2: '',
-						remark: ''
-					}
+					otherPrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 }
 				},
 				usd: 0.00,
 				cny: 0.00
@@ -293,69 +290,8 @@ export default {
 			})
 		})
 		this.initData()
-		// await this.getWxConfig()
     },
     methods: {
-		// async getWxConfig() {
-		// 	let res = await Api.wxConfig()
-		// 	this.configData = res.data
-		// },
-		// initWxConfig() {
-		// 	const data = this.configData
-		// 	return new Promise((resolve, reject) => {
-		// 		wx.config({
-		// 			debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-		// 			appId: data.appId, // 必填，唯一标识
-		// 			timestamp: data.timestamp, // 必填，生成签名的时间戳
-		// 			nonceStr: data.nonceStr, // 必填，生成签名的随机串
-		// 			signature: data.signature, // 必填，签名
-		// 			jsApiList: [
-		// 				'chooseImage',
-		// 				'uploadImage',
-		// 				'getLocalImgData'
-		// 			]
-		// 		})
-		// 		wx.ready(res => {
-		// 			// 微信SDK准备就绪后执行的回调。
-		// 			resolve(wx, res)
-		// 		})
-		// 		wx.error(err => {
-		// 			reject(wx, err)
-		// 		})
-		// 	})
-		// },
-		// handleLogo() {
-		// 	const that = this
-		// 	that.initWxConfig().then((wx) => {
-		// 		wx.chooseImage({
-		// 			count: 1,
-		// 			success: res => {
-		// 				let localIds = res.localIds[0] // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-		// 				wx.getLocalImgData({
-		// 					localId: localIds, // 图片的localID
-		// 					success: (res) => {
-		// 						// localData是图片的base64数据
-		// 						that.$toast({ message: JSON.stringify(res.localData), duration: 6000 })
-		// 						let fileName = new Date().getTime()
-		// 						let file = base64toFile(res.localData, fileName)
-		// 						console.log(file)
-		// 						const formData = new FormData()
-		// 						formData.append('image', file)
-		// 						Api.uploadFile(formData).then(res => {
-		// 							let imageData = res.data
-		// 							if(imageData){
-		// 								imageUrlToBase64(config.staticUrl + imageData).then(data => {
-		// 									that.info.company_logo = data
-		// 									that.$toast('wx上传成功')
-		// 								})
-		// 							}
-		// 						})
-		// 					}
-		// 				})
-		// 			}
-		// 		})
-		// 	})
-		// },
 		initData() {
 			Api.getInfo({
 				id: this.id
@@ -378,7 +314,7 @@ export default {
 					for (const key in data['price_json']) {
 						if (Object.hasOwnProperty.call(data['price_json'], key)) {
 							const element = data['price_json'][key]
-							if(key === 'transPrice' || key === 'carPrice' || key === 'customer_price' || key === 'otherPrice'){
+							if(key === 'transPrice' || key === 'carPrice' || key === 'customerPrice' || key === 'otherPrice'){
 								for (const cKey in element) {
 									if (Object.hasOwnProperty.call(this.info['price_json'][key], cKey)) {
 										this.info['price_json'][key][cKey] = element[cKey]
@@ -389,7 +325,6 @@ export default {
 							}
 						}
 					}
-					this.calcSurcharge()
 				}
 
 				if(!this.info.to_date){
@@ -443,42 +378,76 @@ export default {
 			let gp40 = parseFloat(this.info.gp40) || 0
 			let hq40 = parseFloat(this.info.hq40) || 0
 			if(gp20 || gp40 || hq40){
-				const newTrans = (parseFloat(this.info.gp20) || 0) * (Number(this.info.gp20_count) || 0) +
-								(parseFloat(this.info.gp40) || 0) * (Number(this.info.gp40_count) || 0) +
-								(parseFloat(this.info.hq40) || 0) * (Number(this.info.hq40_count) || 0)
-				this.info.price_json.transPrice.sum = newTrans
-				
-				this.calcTotal()
+				if(!this.info.id){
+					const newTrans = (parseFloat(this.info.gp20) || 0) * (Number(this.info.gp20_count) || 0) +
+									(parseFloat(this.info.gp40) || 0) * (Number(this.info.gp40_count) || 0) +
+									(parseFloat(this.info.hq40) || 0) * (Number(this.info.hq40_count) || 0)
+					this.info.price_json.transPrice.sum = newTrans
+				}
+				this.getSurcharge()
 			}
 		},
+		// 小计
+		subTotal(v, type) {
+			if(type == 'portSurcharge' || type == 'companySurcharge'){
+				let gp20 = parseFloat(this.info.price_json[type][v].list.gp20) || 0
+				let gp40 = parseFloat(this.info.price_json[type][v].list.gp40) || 0
+				let hq40 = parseFloat(this.info.price_json[type][v].list.hq40) || 0
+				this.info.price_json[type][v].list.sum = parseFloat(gp20 + gp40 + hq40)
+			}else{
+				let gp20 = parseFloat(this.info.price_json[type].gp20) || 0
+				let gp40 = parseFloat(this.info.price_json[type].gp40) || 0
+				let hq40 = parseFloat(this.info.price_json[type].hq40) || 0
+				this.info.price_json[type].sum = parseFloat(gp20 + gp40 + hq40)
+			}
+
+			this.calcSurcharge()
+		},
 		// 附加费
+		getSurcharge() {
+			if(this.info.id){
+				Api.getSurcharge({
+					id: this.info.id,
+					gp20: Number(this.info.gp20_count) || 0,
+					gp40: Number(this.info.gp40_count) || 0,
+					hq40: Number(this.info.hq40_count) || 0
+				}).then(res => {
+					let data = res.data
+					this.info.cny = data.cny
+					this.info.usd = data.usd
+					this.info.price_json = data.price_json
+				})
+			}else{
+				this.calcSurcharge()
+			}
+		},
 		calcSurcharge() {
 			let usdPrice = 0
 			let cnyPrice = 0
 			this.info.price_json.portSurcharge.forEach(e => {
-				if(e.unit === 'USD'){
-					usdPrice += parseFloat(e.price) || 0
-				}else if(e.unit === 'CNY'){
-					cnyPrice += parseFloat(e.price) || 0
+				if(e.unit == 'usd'){
+					usdPrice += parseFloat(e.list.sum) || 0
+				}else if(e.unit == 'cny'){
+					cnyPrice += parseFloat(e.list.sum) || 0
 				}
 			})
 			this.info.price_json.companySurcharge.forEach(e => {
-				if(e.unit === 'USD'){
-					usdPrice += parseFloat(e.price) || 0
-				}else if(e.unit === 'CNY'){
-					cnyPrice += parseFloat(e.price) || 0
+				if(e.unit == 'usd'){
+					usdPrice += parseFloat(e.list.sum) || 0
+				}else if(e.unit == 'cny'){
+					cnyPrice += parseFloat(e.list.sum) || 0
 				}
 			})
 			this.usdSurcharge = usdPrice
 			this.cnySurcharge = cnyPrice
-			
+		
 			this.calcTotal()
 		},
 		// 合计
 		calcTotal() {
 			let cnyPrice = 0
 			cnyPrice += parseFloat(this.info.price_json.carPrice.sum) || 0
-			cnyPrice += parseFloat(this.info.price_json.customer_price.money) || 0
+			cnyPrice += parseFloat(this.info.price_json.customerPrice.sum) || 0
 			cnyPrice += parseFloat(this.info.price_json.otherPrice.sum) || 0
 			this.info.cny = cnyPrice + parseFloat(this.cnySurcharge)
 
@@ -505,12 +474,7 @@ export default {
 			})
 		},
 		async handleCapture() {
-			if(!this.info.id){
-				this.$toast('请先更新报价单')
-				return
-			}
 			let params = Object.assign({}, this.info)
-			params.status = 2
 			await Api.updateQuote(params)
 
 			const ref = this.$refs.content // 截图区域

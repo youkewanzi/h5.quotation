@@ -57,6 +57,13 @@ const Api = {
             params
         })
     },
+    getSurcharge(params) {
+        return service({
+            url: '/user/priceReport/search_price',
+            method: 'get',
+            params
+        })
+    },
     updateQuote(params) {
         return service({
             url: '/user/priceReport/store',

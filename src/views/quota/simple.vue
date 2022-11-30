@@ -56,22 +56,22 @@
                             </tr>
                             <tr>
                                 <td>20GP</td>
-                                <td><van-field type="number" v-model="item.gp20" @input="calcTransPrice($event, index)" /></td>
-                                <td><van-field type="number" v-model="item.gp20_count" @input="calcTransPrice($event, index)" /></td>
+                                <td><van-field type="number" v-model="item.gp20" @change="calcTransPrice($event, index)" /></td>
+                                <td><van-field type="number" v-model="item.gp20_count" @change="calcTransPrice($event, index)" /></td>
                                 <td><van-field type="number" v-model="item.gp20_weight" /></td>
 								<td><van-switch v-model="item.gp20_is_w" active-value="1" inactive-value="0" size="24px" /></td>
                             </tr>
                             <tr>
                                 <td>40GP</td>
-                                <td><van-field type="number" v-model="item.gp40" @input="calcTransPrice($event, index)" /></td>
-                                <td><van-field type="number" v-model="item.gp40_count" @input="calcTransPrice($event, index)" /></td>
+                                <td><van-field type="number" v-model="item.gp40" @change="calcTransPrice($event, index)" /></td>
+                                <td><van-field type="number" v-model="item.gp40_count" @change="calcTransPrice($event, index)" /></td>
                                 <td><van-field type="number" v-model="item.gp40_weight" /></td>
 								<td><van-switch v-model="item.gp40_is_w" active-value="1" inactive-value="0" size="24px" /></td>
                             </tr>
                             <tr>
                                 <td>40HQ</td>
-                                <td><van-field type="number" v-model="item.hq40" @input="calcTransPrice($event, index)" /></td>
-                                <td><van-field type="number" v-model="item.hq40_count" @input="calcTransPrice($event, index)" /></td>
+                                <td><van-field type="number" v-model="item.hq40" @change="calcTransPrice($event, index)" /></td>
+                                <td><van-field type="number" v-model="item.hq40_count" @change="calcTransPrice($event, index)" /></td>
                                 <td><van-field type="number" v-model="item.hq40_weight" /></td>
 								<td><van-switch v-model="item.hq40_is_w" active-value="1" inactive-value="0" size="24px" /></td>
                             </tr>
@@ -99,10 +99,7 @@
 			</div>
 		</div>
 		<div class="operate-wrap">
-			<div class="operate">
-				<div class="btn update"></div>
-				<button class="btn capture" @click="handleCapture" v-preventReClick="3000">生成报价单</button>
-			</div>
+			<button class="btn capture" @click="handleCapture" v-preventReClick="3000">生成报价单</button>
 		</div>
 	</div>
 </template>
