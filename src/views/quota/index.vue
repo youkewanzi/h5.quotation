@@ -360,6 +360,7 @@ export default {
             })
         },
         queryPrice(value) {
+			this.handleSave()
 			this.active = value
             if(value === 'yunjia' && this.info.start_port_id && this.info.end_port_id){
                 wx.miniProgram.navigateTo({
@@ -470,9 +471,9 @@ export default {
 			})
 		},
 		handleSave() {
-			Api.updateQuote(this.info).then(() => {
-				this.handleLog()
-			})
+			let params = Object.assign({}, this.info)
+			params.status = 2
+			Api.updateQuote(params)
 		},
 		async handleCapture() {
 			let params = Object.assign({}, this.info)

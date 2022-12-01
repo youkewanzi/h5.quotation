@@ -3,7 +3,6 @@ export default {
         // 防止重复点击
         Vue.directive('preventReClick', {
             inserted(el, binding) {
-                console.log(el, binding.value)
                 el.addEventListener('click', () => {
                     if (!el.disabled) {
                         el.disabled = true
