@@ -257,19 +257,19 @@ export default {
 				hq40_is_w: 0,
 				price_json: {
 					// 运费
-					transPrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 },
+					transPrice: { gp20: 0, gp40: 0, hq40: 0, sum: 0 },
 					// 港口附加费
 					portSurcharge: [],
 					// 公司附加费
 					companySurcharge: [],
 					// 拖车费
-					carPrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 },
+					carPrice: { gp20: 0, gp40: 0, hq40: 0, sum: 0 },
 					// 报关费
-					customerPrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 },
+					customerPrice: { gp20: 0, gp40: 0, hq40: 0, sum: 0 },
 					// 仓储费
-					storagePrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 },
+					storagePrice: { gp20: 0, gp40: 0, hq40: 0, sum: 0 },
 					// 其它费
-					otherPrice: { gp20: 0, gp40: 0, hp40: 0, sum: 0 }
+					otherPrice: { gp20: 0, gp40: 0, hq40: 0, sum: 0 }
 				},
 				usd: 0.00,
 				cny: 0.00
@@ -359,20 +359,24 @@ export default {
                 url: '/pages/chuancang/baojia/log'
             })
         },
-        async queryPrice(value) {
-			let params = Object.assign({}, this.info)
-			await Api.updateQuote(params)
-			this.active = value
-            if(value === 'yunjia' && this.info.start_port_id && this.info.end_port_id){
-                wx.miniProgram.navigateTo({
-                    url: '/pages/chuancang/dingcang/priceList?start_port_id=' + this.info.start_port_id + '&end_port_id=' + this.info.end_port_id
-                })
-            }else{
-                wx.miniProgram.switchTab({
-                    url: '/pages/chuancang/index/index'
-                })
-				wx.miniProgram.postMessage({ data: { active: value } })
-            }
+        queryPrice(value) {
+			Api.updateQuote(this.info).then(() => {
+				this.active = value
+				if(value === 'yunjia' && this.info.start_port_id && this.info.end_port_id){
+					setTimeout(() => {
+						wx.miniProgram.navigateTo({
+							url: '/pages/chuancang/dingcang/priceList?start_port_id=' + this.info.start_port_id + '&end_port_id=' + this.info.end_port_id
+						})
+					}, 500)
+				}else{
+					setTimeout(() => {
+						wx.miniProgram.switchTab({
+							url: '/pages/chuancang/index/index'
+						})
+						wx.miniProgram.postMessage({ data: { active: value } })
+					}, 500)
+				}
+			})
         },
 		// 运费
 		calcTransPrice() {
