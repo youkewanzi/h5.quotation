@@ -472,11 +472,11 @@ export default {
 		},
 		handleSave() {
 			let params = Object.assign({}, this.info)
-			params.status = 2
 			Api.updateQuote(params)
 		},
 		async handleCapture() {
 			let params = Object.assign({}, this.info)
+			params.status = 2
 			await Api.updateQuote(params)
 
 			const ref = this.$refs.content // 截图区域
