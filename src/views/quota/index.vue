@@ -359,8 +359,9 @@ export default {
                 url: '/pages/chuancang/baojia/log'
             })
         },
-        queryPrice(value) {
-			this.handleSave()
+        async queryPrice(value) {
+			let params = Object.assign({}, this.info)
+			await Api.updateQuote(params)
 			this.active = value
             if(value === 'yunjia' && this.info.start_port_id && this.info.end_port_id){
                 wx.miniProgram.navigateTo({
@@ -469,10 +470,6 @@ export default {
 					})
 				}
 			})
-		},
-		handleSave() {
-			let params = Object.assign({}, this.info)
-			Api.updateQuote(params)
 		},
 		async handleCapture() {
 			let params = Object.assign({}, this.info)
