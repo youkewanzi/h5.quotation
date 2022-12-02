@@ -275,7 +275,8 @@ export default {
 				cny: 0.00
 			},
 			usdSurcharge: 0, // usd附加费
-			cnySurcharge: 0	// cny附加费
+			cnySurcharge: 0, // cny附加费
+            timer: ''
 		}
 	},
     created() {
@@ -289,9 +290,18 @@ export default {
 				console.log('当前环境：' + JSON.stringify(res))
 			})
 		})
-		this.initData()
+		if(this.token){
+			this.initData()
+			clearInterval(this.timer)
+			this.interval()
+		}
     },
     methods: {
+        interval(){
+            this.timer = setInterval(() => {
+				Api.updateQuote(this.info)
+            }, 3000)
+        },
 		initData() {
 			Api.getInfo({
 				id: this.id
