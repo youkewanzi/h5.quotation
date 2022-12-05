@@ -272,7 +272,8 @@ export default {
 					otherPrice: { gp20: 0, gp40: 0, hq40: 0, sum: 0 }
 				},
 				usd: 0.00,
-				cny: 0.00
+				cny: 0.00,
+				status: 1
 			},
 			usdSurcharge: 0, // usd附加费
 			cnySurcharge: 0, // cny附加费
@@ -291,56 +292,61 @@ export default {
 			})
 		})
 		if(this.token){
-			this.initData()
+			await this.initData()
 			clearInterval(this.timer)
-			this.interval()
+			if(this.info.status != 2){
+				this.interval()
+			}
 		}
     },
     methods: {
         interval(){
             this.timer = setInterval(() => {
-				Api.updateQuote(this.info)
+				Api.updateQuote(this.info).then(res => {
+					if(res.data){
+						this.info.id = res.data
+					}
+				})
             }, 3000)
         },
-		initData() {
-			Api.getInfo({
+		async initData() {
+			let res = await Api.getInfo({
 				id: this.id
-			}).then(res => {
-				let data = res.data
-				if(data.company_logo){
-					imageUrlToBase64(config.staticUrl + data.company_logo).then(res => {
-						this.company_logo = res
-					})
-				}
-				for (const key in data) {
-					if (Object.hasOwnProperty.call(this.info, key)) {
-						const element = data[key]
-						if(key !== 'price_json' && element !== null){
-							this.info[key] = element
-						}
-					}
-				}
-				if(data.price_json){
-					for (const key in data['price_json']) {
-						if (Object.hasOwnProperty.call(data['price_json'], key)) {
-							const element = data['price_json'][key]
-							if(key === 'transPrice' || key === 'carPrice' || key === 'customerPrice' || key === 'otherPrice'){
-								for (const cKey in element) {
-									if (Object.hasOwnProperty.call(this.info['price_json'][key], cKey)) {
-										this.info['price_json'][key][cKey] = element[cKey]
-									}
-								}
-							}else if(element !== null){
-								this.info['price_json'][key] = element
-							}
-						}
-					}
-				}
-
-				if(!this.info.to_date){
-					this.info.to_date = parseInt(new Date().getTime() / 1000)
-				}
 			})
+			let data = res.data
+			if(data.company_logo){
+				imageUrlToBase64(config.staticUrl + data.company_logo).then(res => {
+					this.company_logo = res
+				})
+			}
+			for (const key in data) {
+				if (Object.hasOwnProperty.call(this.info, key)) {
+					const element = data[key]
+					if(key !== 'price_json' && element !== null){
+						this.info[key] = element
+					}
+				}
+			}
+			if(data.price_json){
+				for (const key in data['price_json']) {
+					if (Object.hasOwnProperty.call(data['price_json'], key)) {
+						const element = data['price_json'][key]
+						if(key === 'transPrice' || key === 'carPrice' || key === 'customerPrice' || key === 'otherPrice'){
+							for (const cKey in element) {
+								if (Object.hasOwnProperty.call(this.info['price_json'][key], cKey)) {
+									this.info['price_json'][key][cKey] = element[cKey]
+								}
+							}
+						}else if(element !== null){
+							this.info['price_json'][key] = element
+						}
+					}
+				}
+			}
+
+			if(!this.info.to_date){
+				this.info.to_date = parseInt(new Date().getTime() / 1000)
+			}
 		},
 		formatDate(date) {
 			if(date){
@@ -370,24 +376,34 @@ export default {
             })
         },
         queryPrice(value) {
-			Api.updateQuote(this.info).then(() => {
-				this.active = value
-				if(value === 'yunjia' && this.info.start_port_id && this.info.end_port_id){
-					setTimeout(() => {
-						wx.miniProgram.navigateTo({
-							url: '/pages/chuancang/dingcang/priceList?start_port_id=' + this.info.start_port_id + '&end_port_id=' + this.info.end_port_id
-						})
-					}, 500)
-				}else{
-					setTimeout(() => {
-						wx.miniProgram.switchTab({
-							url: '/pages/chuancang/index/index'
-						})
-						wx.miniProgram.postMessage({ data: { active: value } })
-					}, 500)
-				}
-			})
+			if(this.info.status && this.info.status == 2){
+				this.jumpPage(value)
+			}else{
+				Api.updateQuote(this.info).then(res => {
+					if(res.data){
+						this.info.id = res.data
+					}
+					this.jumpPage(value)
+				})
+			}
         },
+		jumpPage(value) {
+			this.active = value
+			if(value === 'yunjia' && this.info.start_port_id && this.info.end_port_id){
+				setTimeout(() => {
+					wx.miniProgram.navigateTo({
+						url: '/pages/chuancang/dingcang/priceList?start_port_id=' + this.info.start_port_id + '&end_port_id=' + this.info.end_port_id
+					})
+				}, 500)
+			}else{
+				setTimeout(() => {
+					wx.miniProgram.switchTab({
+						url: '/pages/chuancang/index/index'
+					})
+					wx.miniProgram.postMessage({ data: { active: value } })
+				}, 500)
+			}
+		},
 		// 运费
 		calcTransPrice() {
 			let gp20 = parseFloat(this.info.gp20) || 0
@@ -486,9 +502,7 @@ export default {
 			})
 		},
 		async handleCapture() {
-			let params = Object.assign({}, this.info)
-			params.status = 2
-			await Api.updateQuote(params)
+			await Api.storeQuote(this.info)
 
 			const ref = this.$refs.content // 截图区域
 			html2canvas(ref, {

@@ -66,6 +66,13 @@ const Api = {
     },
     updateQuote(params) {
         return service({
+            url: '/user/priceReport/update',
+            method: 'post',
+            data: params
+        })
+    },
+    storeQuote(params) {
+        return service({
             url: '/user/priceReport/store',
             method: 'post',
             data: params
