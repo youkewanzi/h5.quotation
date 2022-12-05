@@ -314,31 +314,33 @@ export default {
 				id: this.id
 			})
 			let data = res.data
-			if(data.company_logo){
-				imageUrlToBase64(config.staticUrl + data.company_logo).then(res => {
-					this.company_logo = res
-				})
-			}
-			for (const key in data) {
-				if (Object.hasOwnProperty.call(this.info, key)) {
-					const element = data[key]
-					if(key !== 'price_json' && element !== null){
-						this.info[key] = element
+			if(data){
+				for (const key in data) {
+					if (Object.hasOwnProperty.call(this.info, key)) {
+						const element = data[key]
+						if(key !== 'price_json' && element !== null){
+							this.info[key] = element
+						}
 					}
 				}
-			}
-			if(data.price_json){
-				for (const key in data['price_json']) {
-					if (Object.hasOwnProperty.call(data['price_json'], key)) {
-						const element = data['price_json'][key]
-						if(key === 'transPrice' || key === 'carPrice' || key === 'customerPrice' || key === 'otherPrice'){
-							for (const cKey in element) {
-								if (Object.hasOwnProperty.call(this.info['price_json'][key], cKey)) {
-									this.info['price_json'][key][cKey] = element[cKey]
+				if(data.company_logo){
+					imageUrlToBase64(config.staticUrl + data.company_logo).then(res => {
+						this.company_logo = res
+					})
+				}
+				if(data.price_json){
+					for (const key in data['price_json']) {
+						if (Object.hasOwnProperty.call(data['price_json'], key)) {
+							const element = data['price_json'][key]
+							if(key === 'transPrice' || key === 'carPrice' || key === 'customerPrice' || key === 'otherPrice'){
+								for (const cKey in element) {
+									if (Object.hasOwnProperty.call(this.info['price_json'][key], cKey)) {
+										this.info['price_json'][key][cKey] = element[cKey]
+									}
 								}
+							}else if(element !== null){
+								this.info['price_json'][key] = element
 							}
-						}else if(element !== null){
-							this.info['price_json'][key] = element
 						}
 					}
 				}
