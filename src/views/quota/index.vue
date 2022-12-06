@@ -299,6 +299,9 @@ export default {
 			}
 		}
     },
+    beforeDestroy() {
+        clearInterval(this.timer)
+    },
     methods: {
         interval(){
             this.timer = setInterval(() => {
@@ -390,6 +393,7 @@ export default {
 			}
         },
 		jumpPage(value) {
+			clearInterval(this.timer)
 			this.active = value
 			if(value === 'yunjia' && this.info.start_port_id && this.info.end_port_id){
 				setTimeout(() => {
