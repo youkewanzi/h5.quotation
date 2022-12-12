@@ -55,13 +55,14 @@ input{
             .btn-log{
                 position: absolute;
                 top: 50%;
-                right: 0.08rem;
+                right: 0.2rem;
                 transform: translateY(-50%);
-                padding: 0.06rem 0.12rem;
+                padding: 0.08rem 0.24rem;
                 font-size: 0.24rem;
-                color: #007BFF;
+                color: #fff;
+                background-image: linear-gradient(to right,#0075FF,#0DA4FF);
+                border-radius: 0.2rem;
                 border: none;
-                background-color: transparent;
                 z-index: 9;
             }
         }
@@ -582,6 +583,7 @@ input{
                             margin-right: 0.2rem;
                         }
                         .orange{
+                            font-weight: bold;
                             color: #FF6528;
                         }
                     }
@@ -598,11 +600,14 @@ input{
                     .tips{
                         margin-left: 0.32rem;
                         font-size: 0.28rem;
-                        color: #d1d1d1;
                         .tit{
                             margin-bottom: 0.2rem;
                             font-size: 0.32rem;
                             color: #212121;
+                        }
+                        .orange{
+                            font-weight: bold;
+                            color: #FF6528;
                         }
                     }
                 }

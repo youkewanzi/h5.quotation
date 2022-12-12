@@ -263,7 +263,7 @@ export default {
 					// 公司附加费
 					companySurcharge: [],
 					// 拖车费
-					carPrice: { gp20: 0, gp40: 0, hq40: 0, sum: 0 },
+					carPrice: { gp20: 0, gp40: 0, hq40: 0, gp20_one: 0, gp40_one: 0, hq40_one: 0, sum: 0 },
 					// 报关费
 					customerPrice: { gp20: 0, gp40: 0, hq40: 0, sum: 0 },
 					// 仓储费
