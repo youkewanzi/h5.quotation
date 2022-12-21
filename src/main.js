@@ -9,18 +9,12 @@ import '@/assets/css/layout.scss'
 import preventReClick from './utils/click'
 Vue.use(preventReClick)
 
-import { Toast, Calendar, Switch, Field, Uploader } from 'vant'
-import 'vant/lib/toast/style'
-import 'vant/lib/calendar/style'
-import 'vant/lib/switch/style'
-import 'vant/lib/field/style'
-import 'vant/lib/uploader/style'
+import Vant from 'vant'
+import 'vant/lib/index.css'
+Vue.use(Vant)
 
+import { Toast } from 'vant'
 Vue.use(Toast)
-Vue.use(Calendar)
-Vue.use(Switch)
-Vue.use(Field)
-Vue.use(Uploader)
 
 Vue.config.productionTip = false
 

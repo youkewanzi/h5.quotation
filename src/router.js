@@ -28,6 +28,12 @@ export default new Router({
             name: 'Poster',
             meta: {title: '邀请好友'},
             component: () => import('@/views/share/poster')
+        },
+        {
+            path: '/waybill',
+            name: 'Waybill',
+            meta: {title: '运单查询'},
+            component: () => import('@/views/waybill/index')
         }
     ]
 })

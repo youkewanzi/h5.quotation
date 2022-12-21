@@ -638,4 +638,137 @@ input{
             }
         }
     }
+    &.waybill{
+        .title{
+            height: 1rem;
+            line-height: 1rem;
+            font-size: 0.32rem;
+            font-weight: bold;
+            text-align: center;
+            color: #fff;
+            background: linear-gradient(to right, #0075FF, #0DA4FF);
+        }
+        .content{
+            padding: 0.3rem;
+            margin: 0.3rem;
+            background-color: #fff;
+            border-radius: 0.2rem;
+            .item{
+                margin-bottom: 0.5rem;
+                .tit{
+                    font-size: 0.3rem;
+                    font-weight: bold;
+                    span{
+                        margin-right: 0.08rem;
+                        font-size: 0.24rem;
+                        color: #f00;
+                    }
+                }
+                .value{
+                    margin-top: 0.2rem;
+                    font-size: 0.28rem;
+                    .input-box{
+                        padding: 0.16rem 0.24rem;
+                        font-size: 0.28rem;
+                        background-color: #fafafa;
+                        border: 1px solid #ececec;
+                        border-radius: 1rem;
+                        input{
+                            color: #999;
+                            &::placeholder{
+                                color: #999;
+                            }
+                        }
+                    }
+                    .van-radio{
+                        margin-right: 0;
+                        &+.van-radio{
+                            margin-left: 1rem;
+                        }
+                    }
+                }
+            }
+        }
+        .btn-query{
+            width: 100%;
+            padding: 0.2rem 0;
+            font-size: 0.3rem;
+            color: #fff;
+            background: linear-gradient(to right, #0075FF, #0DA4FF);
+            border: none;
+            border-radius: 1rem;
+        }
+        .select-mark{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #f1f1f1;
+            z-index: 99;
+        }
+    }
+}
+.index-bar{
+    .top{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        color: #fff;
+        background: linear-gradient(to right, #0075FF, #0DA4FF);
+        z-index: 2;
+        .van-nav-bar{
+            background: linear-gradient(to right, #0075FF, #0DA4FF);
+            .van-nav-bar__content{
+                height: 1rem;
+                .van-nav-bar__left{
+                    padding: 0 0.16rem;
+                }
+            }
+            .van-icon, .van-nav-bar__text, .van-nav-bar__title{
+                color: #fff;
+            }
+            &::after{
+                border: none;
+            }
+        }
+        .van-search{
+            padding: 0.2rem 0.24rem;
+            .van-search__content{
+                background-color: #6bb7f7;
+            }
+            .van-icon-search, input{
+                color: #fff;
+            }
+            input::placeholder{
+                color: #fff;
+            }
+        }
+    }
+    .van-index-bar{
+        position: fixed;
+        top: 2.05rem;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: auto;
+        z-index: 1;
+        .van-index-bar__sidebar{
+            padding: 0.1rem 0.05rem;
+            background-color: #f6f6f6;
+            border-radius: 50%;
+            .van-index-bar__index{
+                padding: 0.05rem 0.1rem;
+            }
+        }
+        .item{
+            padding-right: 0.7rem;
+            .van-cell__value{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    }
 }

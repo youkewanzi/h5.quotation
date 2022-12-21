@@ -103,6 +103,26 @@ const Api = {
             url: '/user/get_qr_code',
             method: 'get'
         })
+    },
+    portList(params) {
+        return service({
+            url: '/ship/port/1',
+            method: 'get',
+            params
+        })
+    },
+    companyList() {
+        return service({
+            url: '/ship/company',
+            method: 'get'
+        })
+    },
+    queryOrder(params) {
+        return service({
+            url: '/ship/trackSearch',
+            method: 'get',
+            params
+        })
     }
 }
 export default Api
