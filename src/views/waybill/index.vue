@@ -59,9 +59,16 @@ export default {
                 chinese_name: ''
             },
             type: 1,
-            order_id: ''
+            order_id: '',
+            user_id: ''
 		}
 	},
+    created() {
+        this.user_id = this.$route.query.user_id || ''
+        if(!this.user_id){
+            window.location.href = 'https://api.hangyunli.com/user/login2'
+        }
+    },
     methods: {
         handlePort() {
             this.isPort = true
@@ -97,7 +104,8 @@ export default {
             Api.queryOrder({
                 start_port_id: this.port.id,
                 ship_company_id: this.company.id,
-                order_number: this.order_id
+                order_number: this.order_id,
+                user_id: this.user_id
             }).then(res => {
                 if(res.data){
                     window.location.href = res.data
