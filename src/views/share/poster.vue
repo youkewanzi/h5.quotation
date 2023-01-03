@@ -71,13 +71,6 @@ export default {
     created() {
         this.token = this.$route.query.token || ''
 		this.$store.commit('user/SET_TOKEN', this.token)
-        this.nickname = this.$route.query.nickname || ''
-        this.avatar_url = this.$route.query.avatar_url || ''
-        if(this.avatar_url){
-            imageUrlToBase64(config.staticUrl + this.avatar_url).then(res => {
-                this.avatar_url = res
-            })
-        }
     },
     mounted() {
 		document.addEventListener('WeixinJSBridgeReady', function() {
@@ -93,7 +86,7 @@ export default {
             Api.getUserInfo().then(res => {
 				let data = res.data || {}
                 if(data.avatar_url){
-                    imageUrlToBase64(data.avatar_url).then(res => {
+                    imageUrlToBase64(config.staticUrl + data.avatar_url).then(res => {
                         this.avatar_url = res
                     })
                 }
