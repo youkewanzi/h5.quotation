@@ -7,7 +7,7 @@
             <span class="value">10</span>
             <span class="unit">元</span>
             <div class="btn-sort sm" @click="handleInvite">立即邀请</div>
-            <div class="tips">你的好友可获得30元整箱下单优惠券哦~</div>
+            <div class="tips">你的好友可获得USD30整箱下单优惠券哦~</div>
         </div>
         <div class="step content-wrap">
             <div class="title">

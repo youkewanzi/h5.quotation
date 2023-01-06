@@ -5,7 +5,7 @@
                 <div class="avatar"><img :src="avatar_url" /></div>
                 <div class="value">
                     <div class="name">我是《{{nickname}}》</div>
-                    <div class="tips">邀你免费领取 <span class="num">30</span><span>元</span> 整箱航运抵扣券</div>
+                    <div class="tips">邀你免费领取 <span class="num">USD30</span> 整箱航运抵扣券</div>
                 </div>
             </div>
             <div class="content">
@@ -41,7 +41,7 @@
                     <img class="code" :src="qrcode" />
                     <div class="tips">
                         <div class="tit">微信扫一扫</div>
-                        <div class="orange">即可获得 30元 整箱抵扣券。</div>
+                        <div class="orange">即可获得 USD30 整箱抵扣券。</div>
                     </div>
                 </div>
             </div>
